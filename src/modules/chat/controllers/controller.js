@@ -6,6 +6,8 @@ var mongoose = require('mongoose'),
     errorHandler = require('../../core/controllers/errors.server.controller'),
     _ = require('lodash');
 
+    request = require('request');
+
 const reply = (bodyResponse) => {
     let headers = {
         'Content-Type': 'application/json',
