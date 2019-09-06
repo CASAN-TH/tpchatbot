@@ -1,0 +1,34 @@
+'use strict';
+var controller = require('../controllers/controller'),
+    mq = require('../../core/controllers/rabbitmq'),
+    policy = require('../policy/policy');
+module.exports = function (app) {
+    var url = '/api/chats';
+    var urlWithParam = '/api/chats/:chatId';
+    app.route(url).all(policy.isAllowed)
+        .get(controller.getList)
+        .post(controller.create);
+
+    app.route(urlWithParam).all(policy.isAllowed)
+        .get(controller.read)
+        .put(controller.update)
+        .delete(controller.delete);
+
+        app.route('/webhook')
+        .post(controller.messageresponse);
+
+
+
+    app.param('chatId', controller.getByID);
+
+    /**
+     * Message Queue
+     * exchange : ชื่อเครือข่ายไปรษณีย์  เช่น casan
+     * qname : ชื่อสถานีย่อย สาขา
+     * keymsg : ชื่อผู้รับ
+     */
+    // mq.consume('exchange', 'qname', 'keymsg', (msg)=>{
+    //     console.log(JSON.parse(msg.content));
+        
+    // });
+}
