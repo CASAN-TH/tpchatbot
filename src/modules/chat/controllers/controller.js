@@ -6,18 +6,18 @@ var mongoose = require('mongoose'),
     errorHandler = require('../../core/controllers/errors.server.controller'),
     _ = require('lodash');
 
-   var request = require('request');
+var request = require('request');
 
-const reply = (bodyResponse) => {
+const reply = (req) => {
     let headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ndkhN/VjsnZb19qalm3byafc2UFus9CZfgI6CB/WbfQG6c3a7qWjB9jmukbfgbLdnaDNn+FWLxfUidoBwolOWDiF+BKpcDHcINKxBgbbnCBcuzejXMJuO8O8YJ7VS296UIbwnjgyqslUeE07Brka3wdB04t89/1O/w1cDnyilFU='
     }
     let body = JSON.stringify({
-        replyToken: bodyResponse.events[0].replyToken,
+        replyToken: req.body.events[0].replyToken,
         messages: [{
             type: `text`,
-            text: `สวัสดี`
+            text: JSON.stringify(req.body)
         }]
     })
     request.post({
@@ -28,13 +28,26 @@ const reply = (bodyResponse) => {
         console.log('status = ' + res.statusCode);
     });
 }
-exports.messageresponse = function (req, res) {
-    reply(req.body);
 
-    res.jsonp({
-        status: 200,
-        data: "hello"
+const postToDialogflow = req => {
+    req.headers.host = "bots.dialogflow.com";
+    return request.post({
+        uri: "https://bots.dialogflow.com/line/eaa24172-d385-4ec2-bce8-23f209e0f229/webhook",
+        headers: req.headers,
+        body: JSON.stringify(req.body)
     });
+};
+
+exports.messageresponse = function (req, res) {
+    if (req.method === "POST") {
+        let event = req.body.events[0]
+        if (event.type === "message" && event.message.type === "text") {
+            postToDialogflow(req);
+        } else {
+            reply(req);
+        }
+    }
+    return res.status(200).send(req.method);
 };
 
 exports.getList = function (req, res) {
