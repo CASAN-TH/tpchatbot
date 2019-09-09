@@ -31,10 +31,12 @@ const reply = (req) => {
 
 const postToDialogflow = req => {
     req.headers.host = "bots.dialogflow.com";
-    return request.post({
+    request.post({
         uri: "https://bots.dialogflow.com/line/eaa24172-d385-4ec2-bce8-23f209e0f229/webhook",
         headers: req.headers,
         body: JSON.stringify(req.body)
+    }, (err, res, body) => {
+        console.log('status = ' + res.statusCode);
     });
 };
 
