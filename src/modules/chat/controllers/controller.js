@@ -37,6 +37,7 @@ const postToDialogflow = req => {
         body: JSON.stringify(req.body)
     }, (err, res, body) => {
         console.log('status = ' + res.statusCode);
+        console.log(res.body);
     });
 };
 
