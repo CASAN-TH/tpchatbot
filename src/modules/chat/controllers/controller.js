@@ -43,7 +43,7 @@ const postToDialogflow = req => {
 
 exports.messageresponse = function (req, res) {
     if (req.method === "POST") {
-        console.log(req.body);
+        console.log(req.body.fulfillmentText);
         // let event = req.body.events[0]
         // if (event.type === "message" && event.message.type === "text") {
         //     postToDialogflow(req);
