@@ -43,12 +43,13 @@ const postToDialogflow = req => {
 
 exports.messageresponse = function (req, res) {
     if (req.method === "POST") {
-        let event = req.body.events[0]
-        if (event.type === "message" && event.message.type === "text") {
-            postToDialogflow(req);
-        } else {
-            reply(req);
-        }
+        console.log(req.body);
+        // let event = req.body.events[0]
+        // if (event.type === "message" && event.message.type === "text") {
+        //     postToDialogflow(req);
+        // } else {
+        //     reply(req);
+        // }
     }
     return res.status(200).send(req.method);
 };
